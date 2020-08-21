@@ -24,10 +24,3 @@ then
       git clone ${repo_url}
   fi
 fi
-
-
-  cd -
-else
-  git clone $repo_url
-
-fi
