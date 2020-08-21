@@ -1,14 +1,15 @@
 #!/bin/bash
 clear
 
-folder="c_beginning"
-repo_url="https://github.com/cCppProsto/c_beginning.git"
+folder="/home/user/git"
+repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
 
 if [ -d ${folder} ]
 then
   cd ${folder}
-  git remote update
-  cd ${folder}
+#  git remote update
+  git status
+#  cd ${folder}
   count=$(git rev-list HEAD...origin/master --count)
   if [ $count -gt "0" ]
   then
@@ -21,7 +22,6 @@ then
   fi
   cd -
 else
-  echo "${folder} not exist"
   git clone $repo_url
 
 fi
