@@ -1,8 +1,11 @@
 #!/bin/bash
 clear
 
-folder="/home/user/git"
+folder="/var/test/git"
+dirname="/var/test/log"
 repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
+
+exec &> >(col -bp | tee -a "$(dirname ${0})/add.log")
 
 if [ -d ${folder} ]
 then
@@ -10,16 +13,19 @@ then
 #  git remote update
   git status
 #  cd ${folder}
-  count=$(git rev-list HEAD...origin/master --count)
-  if [ $count -gt "0" ]
+#  count=$(git rev-list HEAD...origin/master --count)
+  if [ read -r -p "Changes to be committed" ]
   then
-    read -r -p  "Update [y/n] " answer
-    if [ "$answer" = "y" ]
-    then
+      cd ${folder}
       git fetch --all
-      git reset --hard origin/master
-    fi
+  elif [ read -r -p "fatal: not a git repository" ]
+    then
+      cd ${folder}
+      git clone ${repo_url}
   fi
+fi
+
+
   cd -
 else
   git clone $repo_url
