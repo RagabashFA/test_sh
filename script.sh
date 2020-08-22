@@ -9,11 +9,16 @@ mkdir -p ${folder}
 mkdir -p ${dirname}
 
 exec &> >(col -bp | tee -a "$(dirname ${0})/add.log")
+
 while true
  do
+   cd ${folder}
+   for remote in `git branch -r`
+    do git branch --track ${remote#origin/} $remote
+   done
    if
    [[ $(date +%H) == 17 ]]
-   [[ $(date +%H) == 19 ]];
+   [[ $(date +%H) == 20 ]]
    then
     if [ -d ${folder} ]
      then
