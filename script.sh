@@ -34,4 +34,5 @@ while true
            git clone ${repo_url}
        fi
     fi
+  fi
 done
