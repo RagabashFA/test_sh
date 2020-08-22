@@ -4,6 +4,7 @@ clear
 folder="/var/test/git"
 dirname="/var/test/log"
 repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
+status_git=` git status | grep "On branch"`
 
 mkdir -p ${folder}
 mkdir -p ${dirname}
@@ -24,11 +25,12 @@ while true
      then
        cd ${folder}
        git status
-       if [ read -r -p "Changes to be committed" ]
+       if [ grep "Changes to be committed" ]
        then
            cd ${folder}
            git fetch --all
-       elif [ read -r -p "fatal: not a git repository" ]
+           set -- $status_git
+       elif [ grep "fatal: not a git repository" ]
          then
            cd ${folder}
            git clone ${repo_url}
