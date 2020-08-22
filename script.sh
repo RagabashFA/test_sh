@@ -3,8 +3,10 @@ clear
 
 folder="/var/test/git"
 dirname="/var/test/log"
+env_file="/var/test/env.list"
 repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
 status_git=` git status | grep "On branch"`
+hash=`git rev-parse $3`
 
 mkdir -p ${folder}
 mkdir -p ${dirname}
@@ -25,12 +27,15 @@ while true
      then
        cd ${folder}
        git status
-       if [ grep "Changes to be committed" ]
+       if [ grep -q "Changes to be committed" ]
        then
            cd ${folder}
            git fetch --all
-           set -- $status_git
-       elif [ grep "fatal: not a git repository" ]
+           set -- $status_git     
+           echo ""branch="$3">$env_file
+           echo ""hash="$hash">>$env_file
+           docker run --env-file $env_file
+       elif [ grep -q "fatal: not a git repository" ]
          then
            cd ${folder}
            git clone ${repo_url}
