@@ -33,8 +33,7 @@ while true
        git fetch --all
        for remote in `git branch -r`
         do git ckeckout $remote
-           git status
-           if [ grep -q "can be fast-forwarded" ]
+           if [ git status | grep -q "can be fast-forwarded" ]
            then
            cd ${folder}
            git pull
@@ -45,7 +44,7 @@ while true
            docker image build . --iidfile -t test_repo/test_image:$version
            docker stop $(docker ps -a -q)
            docker container run test_image:$version -env-file $env_file --log-driver=json
-           elif [ grep -q "fatal: not a git repository" ]
+           elif [ git status | grep -q "fatal: not a git repository" ]
            then
            cd ${folder}
            git clone ${repo_url}
