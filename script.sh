@@ -12,12 +12,13 @@ if_year=`date +%Y`
 X=$(($if_year - $start_year + 1))
 Y=`date +%m`
 Z=`date +%j`
-version=$X.$Y.$Z
+H=`date +%H`
+version=$X.$Y.$Z-$H
 
 mkdir -p ${folder}
 mkdir -p ${dirname}
 
-exec &> >(col -bp | tee -a "$(dirname ${0})/add.log")
+# exec &> >(col -bp | tee -a "$(dirname ${0})/add.log")
 
 while true
  do
@@ -38,11 +39,11 @@ while true
            git fetch --all
            set -- $status_git
            echo ""branch="$3">$env_file
-           echo ""hash="$hash">>$env_file
+           echo ""commit="$hash">>$env_file
            echo ""dir_name="$dirname">>$env_file
-           docker image build -t test_repo/test_image:$version --env-file $env_file
-           docker container stop
-           docker container run test_image:$version
+           docker image build . --iidfile -t test_repo/test_image:$version
+           docker stop $(docker ps -a -q)
+           docker container run test_image:$version -env-file $env_file --log-driver=json
        elif [ grep -q "fatal: not a git repository" ]
          then
            cd ${folder}
