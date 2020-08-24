@@ -18,8 +18,6 @@ version=$X.$Y.$Z-$H
 mkdir -p ${folder}
 mkdir -p ${dirname}
 
-# exec &> >(col -bp | tee -a "$(dirname ${0})/add.log")
-
 while true
  do
    cd ${folder}

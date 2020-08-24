@@ -2,9 +2,11 @@ FROM node
 LABEL maintainer="Fedorov Anton"
 LABEL branch="$branch"
 LABEL commit="$hash"
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+WORKDIR /home/node/app
 RUN npm install
-WORKDIR $dir_name
+COPY index.js .
 VOLUME $dir_name
-COPY index.js ./
+RUN ln -f /dev/stdout ${dir_name}/file.log
 EXPOSE 80
 CMD ["node", "index.js"]
