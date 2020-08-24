@@ -30,11 +30,14 @@ while true
     if [ -d ${folder} ]
      then
        cd ${folder}
-       git status
-       if [ grep -q "Changes to be committed" ]
-       then
+       git fetch --all
+       for remote in `git branch -r`
+        do git ckeckout $remote
+           git status
+           if [ grep -q "can be fast-forwarded" ]
+           then
            cd ${folder}
-           git fetch --all
+           git pull
            set -- $status_git
            echo ""branch="$3">$env_file
            echo ""commit="$hash">>$env_file
@@ -42,11 +45,12 @@ while true
            docker image build . --iidfile -t test_repo/test_image:$version
            docker stop $(docker ps -a -q)
            docker container run test_image:$version -env-file $env_file --log-driver=json
-       elif [ grep -q "fatal: not a git repository" ]
-         then
+           elif [ grep -q "fatal: not a git repository" ]
+           then
            cd ${folder}
            git clone ${repo_url}
-       fi
+           fi
+       done
     fi
   fi
 done
