@@ -50,5 +50,3 @@ while true
     fi
   fi
 done
-
-pam pam
