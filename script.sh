@@ -26,30 +26,27 @@ while true
    done
    if
     (($(date +%H) >= 17))  &&  ((($(date +%H)) <= 20))
-   then
-    if [ -d ${folder} ]
-     then
+    then
        cd ${folder}
        git fetch --all
        for remote in `git branch -r`
-        do git ckeckout $remote
+        do git checkout $remote
            if [ git status | grep -q "can be fast-forwarded" ]
-           then
-           cd ${folder}
-           git pull
-           set -- $status_git
-           echo ""branch="$3">$env_file
-           echo ""commit="$hash">>$env_file
-           echo ""dir_name="$dirname">>$env_file
-           docker image build . --iidfile -t test_repo/test_image:$version
-           docker stop $(docker ps -a -q)
-           docker container run test_image:$version -env-file $env_file --log-driver=json
+            then
+            cd ${folder}
+            git pull
+            set -- $status_git
+            echo ""branch="$3">$env_file
+            echo ""commit="$hash">>$env_file
+            echo ""dir_name="$dirname">>$env_file
+            docker image build . --iidfile -t test_repo/test_image:$version
+            docker stop $(docker ps -a -q)
+            docker container run test_image:$version -env-file $env_file --log-driver=json
            elif [ git status | grep -q "fatal: not a git repository" ]
-           then
-           cd ${folder}
-           git clone ${repo_url}
+            then
+            cd ${folder}
+            git clone ${repo_url}
            fi
        done
     fi
-  fi
 done
