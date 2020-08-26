@@ -5,7 +5,6 @@ readonly cur_loc_script=`pwd`
 folder="/var/test/git"
 fold_repo=$folder/testcase-pybash
 dirname="/var/test/log"
-env_file="/var/test/env.list"
 repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
 status_git=`git status | grep "On branch"`
 hash=`git rev-parse $3`
@@ -26,6 +25,9 @@ cd ${fold_repo}
 for remote in `git branch -r`
  do git branch --track ${remote#origin/} $remote
 done
+cp $cur_loc_script/.dockerignore $fold_repo
+cp $cur_loc_script/dockerfile $fold_repo
+cp $cur_loc_script/package.json $fold_repo
 
 while true
  do
@@ -41,12 +43,9 @@ while true
             cd ${fold_repo}
             git pull
             set -- $status_git
-#            echo ""branch="$3">$env_file
-#            echo ""commit="$hash">>$env_file
-#            echo ""dir_name="$dirname">>$env_file
-            docker image build --build-arg branch=${3} --build-arg commit=${hash} --build-arg dir_name=${dirname} -t test_image:$version $cur_loc_script
+            docker image build . --build-arg branch=${3} --build-arg commit=${hash} --build-arg dir_name=${dirname} -t test_image:$version
             docker stop $(docker ps -a -q)
-            docker container run test_image:$version
+            docker container run -d test_image:$version
            elif [ git status | grep -q "fatal: not a git repository" ]
             then
             cd ${folder}
