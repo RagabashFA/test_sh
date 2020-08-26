@@ -2,6 +2,7 @@
 clear
 
 folder="/var/test/git"
+fold_repo=$folder/testcase_pybash
 dirname="/var/test/log"
 env_file="/var/test/env.list"
 repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
@@ -20,6 +21,7 @@ mkdir -p ${dirname}
 
 cd ${folder}
 git clone ${repo_url}
+cd ${fold_repo}
 for remote in `git branch -r`
  do git branch --track ${remote#origin/} $remote
 done
@@ -29,13 +31,13 @@ while true
    if
     (($(date +%H) >= 17))  &&  ((($(date +%H)) <= 20))
     then
-       cd ${folder}
+       cd ${fold_repo}
        git fetch --all
        for remote in `git branch -r`
         do git checkout $remote
            if [ git status | grep -q "can be fast-forwarded" ]
             then
-            cd ${folder}
+            cd ${fold_repo}
             git pull
             set -- $status_git
             echo ""branch="$3">$env_file
