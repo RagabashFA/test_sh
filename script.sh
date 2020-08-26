@@ -1,8 +1,9 @@
 #!/bin/bash
 clear
 
+readonly cur_loc_script=`pwd`
 folder="/var/test/git"
-fold_repo=$folder/testcase_pybash
+fold_repo=$folder/testcase-pybash
 dirname="/var/test/log"
 env_file="/var/test/env.list"
 repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
@@ -34,18 +35,18 @@ while true
        cd ${fold_repo}
        git fetch --all
        for remote in `git branch -r`
-        do git checkout $remote
+        do git checkout ${remote#origin/}
            if [ git status | grep -q "can be fast-forwarded" ]
             then
             cd ${fold_repo}
             git pull
             set -- $status_git
-            echo ""branch="$3">$env_file
-            echo ""commit="$hash">>$env_file
-            echo ""dir_name="$dirname">>$env_file
-            docker image build . --iidfile -t test_repo/test_image:$version
+#            echo ""branch="$3">$env_file
+#            echo ""commit="$hash">>$env_file
+#            echo ""dir_name="$dirname">>$env_file
+            docker image build --build-arg branch=${3} --build-arg commit=${hash} --build-arg dir_name=${dirname} -t test_image:$version $cur_loc_script
             docker stop $(docker ps -a -q)
-            docker container run test_image:$version -env-file $env_file --log-driver=json
+            docker container run test_image:$version
            elif [ git status | grep -q "fatal: not a git repository" ]
             then
             cd ${folder}
