@@ -8,7 +8,7 @@ LABEL commit=$hash
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 WORKDIR /home/node/app
 RUN npm install
-COPY index.js .
+COPY . .
 VOLUME ${dir_name}
 RUN ln -sf /dev/stdout ${dir_name}/file.log
 EXPOSE 80
