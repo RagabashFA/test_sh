@@ -7,7 +7,6 @@ fold_repo=$folder/testcase-pybash
 dirname="/var/test/log"
 repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
 status_git=`git status | grep "On branch"`
-hash=`git rev-parse $3`
 start_year=2020
 if_year=`date +%Y`
 X=$(($if_year - $start_year + 1))
@@ -43,6 +42,7 @@ while true
             cd ${fold_repo}
             git pull
             set -- $status_git
+            hash=`git rev-parse $3`
             docker image build . --build-arg branch=${3} --build-arg commit=${hash} --build-arg dir_name=${dirname} -t test_image:$version
             docker stop $(docker ps -a -q)
             docker container run -d test_image:$version
