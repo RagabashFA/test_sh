@@ -18,12 +18,14 @@ version=$X.$Y.$Z-$H
 mkdir -p ${folder}
 mkdir -p ${dirname}
 
+cd ${folder}
+git clone ${repo_url}
+for remote in `git branch -r`
+ do git branch --track ${remote#origin/} $remote
+done
+
 while true
  do
-   cd ${folder}
-   for remote in `git branch -r`
-    do git branch --track ${remote#origin/} $remote
-   done
    if
     (($(date +%H) >= 17))  &&  ((($(date +%H)) <= 20))
     then
