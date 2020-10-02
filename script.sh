@@ -2,23 +2,23 @@
 clear
 
 readonly cur_loc_script=`pwd`
-folder="/var/test/git"
+fold_git="/var/test/git"
 fold_repo=$folder/testcase-pybash
-dirname="/var/test/log"
-repo_url="https://github.com/kontur-exploitation/testcase-pybash.git"
+dir_log="/var/test/log"
+repo_url="https://github.com/example/example.git"
 status_git=`git status | grep "On branch"`
 start_year=2020
-if_year=`date +%Y`
-X=$(($if_year - $start_year + 1))
+cur_year=`date +%Y`
+X=$(($cur_year - $start_year + 1))
 Y=`date +%m`
 Z=`date +%j`
 H=`date +%H`
 version=$X.$Y.$Z-$H
 
-mkdir -p ${folder}
-mkdir -p ${dirname}
+mkdir -p ${fold_git}
+mkdir -p ${dir_log}
 
-cd ${folder}
+cd ${fold_git}
 git clone ${repo_url}
 cd ${fold_repo}
 for remote in `git branch -r`
@@ -31,7 +31,7 @@ cp $cur_loc_script/package.json $fold_repo
 while true
  do
    if
-    (($(date +%H) >= 17))  &&  ((($(date +%H)) <= 20))
+    (($(date +%H) >= 11))  &&  ((($(date +%H)) <= 20))
     then
        cd ${fold_repo}
        git fetch --all
@@ -43,13 +43,16 @@ while true
             git pull
             set -- $status_git
             hash=`git rev-parse $3`
-            docker image build . --build-arg branch=${3} --build-arg commit=${hash} --build-arg dir_name=${dirname} -t test_image:$version
+            docker image build . --build-arg branch=${3} --build-arg commit=${hash} --build-arg dir_log=${dir_log} -t test_image:$version
             docker stop $(docker ps -a -q)
             docker container run -d test_image:$version
            elif [ git status | grep -q "fatal: not a git repository" ]
             then
-            cd ${folder}
+            cd ${fold_git}
             git clone ${repo_url}
+            cp $cur_loc_script/.dockerignore $fold_repo
+            cp $cur_loc_script/dockerfile $fold_repo
+            cp $cur_loc_script/package.json $fold_repo
            fi
        done
     fi
